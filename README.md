@@ -15,5 +15,5 @@
 
 ### Other Alternatives
 
--> Measure Ionizing Radiation
--> Cloud Chamber
+1. Measure Ionizing Radiation
+2. Cloud Chamber
