@@ -16,4 +16,4 @@
 ### Other Alternatives
 
 1. Measure Ionizing Radiation
-2. Cloud Chamber
+2. ~Cloud Chamber~
