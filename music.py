@@ -4,12 +4,13 @@ import numpy as np
 import seaborn as sns
 import soundfile as sf
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 SAMPLE_RATE = 44100  # Hz
 DURATION = 10  # seconds
 
 
-def get_events(use_cosmic_events=True):
+def get_events(use_cosmic_events=True, **kwargs):
     """
     Get cosmic events from RPi or use simple events.
 
@@ -19,8 +20,13 @@ def get_events(use_cosmic_events=True):
     Returns:
     - events (list): List of event dictionaries with time, energy, and altitude.
     """
+    use_noise = kwargs.get("use_noise", False)
+    noise_level = kwargs.get("noise_level", 0)
+
     if not isinstance(use_cosmic_events, bool):
         raise TypeError("use_cosmic_events must be a boolean")
+    if not isinstance(use_noise, bool):
+        raise TypeError("use_noise must be a boolean")
 
     if not use_cosmic_events:
         # Simple events with timestamp, energy, position
@@ -29,6 +35,12 @@ def get_events(use_cosmic_events=True):
             {"time": 0.72, "energy": 1.5, "altitude": 0.7},
             # ...more events
         ]
+
+        if use_noise:
+            for event in events:
+                event["energy"] += noise_level * np.random.uniform(
+                    -0.01, 0.01
+                )  # Add noise to energy
     else:
         pass  # Get cosmic events from RPi
 
@@ -90,7 +102,7 @@ def generate_signal(
     assert np.issubdtype(signal.dtype, np.number), "Signal must contain numeric values"
 
     if show_plot or plot_save_path is not None:
-        plot_signal(signal, sample_rate, duration)
+        plot_signal(signal, sample_rate, duration, animate=False)
         if plot_save_path:
             plt.savefig(plot_save_path)
         else:
@@ -99,7 +111,7 @@ def generate_signal(
     return signal
 
 
-def plot_signal(signal, sample_rate, duration):
+def plot_signal(signal, sample_rate, duration, animate=True, **kwargs):
     """
     Plot the generated signal.
 
@@ -111,6 +123,8 @@ def plot_signal(signal, sample_rate, duration):
     Returns:
     - None
     """
+    time_step = kwargs.get("animation_time_step", 0.1)
+
     # Validate inputs
     if not isinstance(signal, np.ndarray):
         raise TypeError("Signal must be a numpy array")
@@ -121,13 +135,41 @@ def plot_signal(signal, sample_rate, duration):
     if not isinstance(signal[0], (int, float)):
         raise TypeError("Signal must contain numeric values")
 
-    sns.set_style(style="whitegrid")
-    sns.lineplot(x=np.arange(len(signal)) / sample_rate, y=signal)
-    plt.title("Cosmic Events Signal")
-    plt.xlabel("Time (s)")
-    plt.ylabel("Amplitude")
-    plt.xlim(0, duration)
-    plt.ylim(-0.5, 2.5)
+    if animate:
+        current_time = []
+        current_energy = []
+
+        def __update(frame):
+
+            t = frame * time_step
+            if t > duration:
+                return (line,)
+
+            current_time.append(t)
+            current_energy.append(signal[int(t * sample_rate)])
+
+            line.set_data(current_time, current_energy)
+            return (line,)
+
+        fig, ax = plt.subplots()
+        ax.set_xlim(0, duration)
+        ax.set_ylim(-0.5, 2.5)
+        ax.set_title("Cosmic Events Signal")
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Amplitude")
+        (line,) = ax.plot([], [], "black", lw=1)
+        global ani
+        ani = animation.FuncAnimation(
+            fig, __update, frames=int(duration / time_step), interval=100, blit=True
+        )
+    else:
+        sns.set_style(style="whitegrid")
+        sns.lineplot(x=np.arange(len(signal)) / sample_rate, y=signal)
+        plt.title("Cosmic Events Signal")
+        plt.xlabel("Time (s)")
+        plt.ylabel("Amplitude")
+        plt.xlim(0, duration)
+        plt.ylim(-0.5, 2.5)
     plt.show()
 
 
@@ -141,7 +183,7 @@ def convert_to_audio(signal, sample_rate, save_path="signal.wav", return_signal=
     audio_signal = signal / np.max(np.abs(signal))
 
     save_audio_file(audio_signal, sample_rate, save_path)
-    return_signal if return_signal else None
+    return audio_signal if return_signal else None
 
 
 def save_audio_file(audio_signal, sample_rate, file_path):
