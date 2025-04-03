@@ -2,6 +2,7 @@
 
 import numpy as np
 import seaborn as sns
+import soundfile as sf
 import matplotlib.pyplot as plt
 
 SAMPLE_RATE = 44100  # Hz
@@ -59,12 +60,10 @@ def generate_signal(
         raise TypeError("Sample rate must be an integer")
     if not sample_rate > 0:
         raise ValueError("Sample rate must be positive")
-    if not isinstance(duration, (int, float)):
-        raise TypeError("Duration must be an integer or float")
+    if not isinstance(duration, int):
+        raise TypeError("Duration must be an integer")
     if not duration > 0:
         raise ValueError("Duration must be positive")
-    if not isinstance(use_cosmic_events, bool):
-        raise TypeError("use_cosmic_events must be a boolean")
     if not isinstance(show_plot, bool):
         raise TypeError("show_plot must be a boolean")
     if plot_save_path is not None and not isinstance(plot_save_path, str):
@@ -84,6 +83,11 @@ def generate_signal(
             # Create exponential decay
             decay = energy * np.exp(-np.arange(1000) / 200)
             signal[idx : idx + len(decay)] += decay
+
+    assert isinstance(signal, np.ndarray), "Signal must be a numpy array"
+    assert signal.ndim == 1, "Signal must be 1-dimensional"
+    assert len(signal) == sample_rate * duration, "Signal length mismatch"
+    assert np.issubdtype(signal.dtype, np.number), "Signal must contain numeric values"
 
     if show_plot or plot_save_path is not None:
         plot_signal(signal, sample_rate, duration)
@@ -112,14 +116,10 @@ def plot_signal(signal, sample_rate, duration):
         raise TypeError("Signal must be a numpy array")
     if signal.ndim != 1:
         raise ValueError("Signal must be a 1D array")
-    if signal.size == 0:
-        raise ValueError("Signal cannot be empty")
+    if len(signal) != sample_rate * duration:
+        raise ValueError("Signal length mismatch")
     if not isinstance(signal[0], (int, float)):
         raise TypeError("Signal must contain numeric values")
-    if not isinstance(sample_rate, int):
-        raise TypeError("Sample rate must be an integer")
-    if not isinstance(duration, (int, float)):
-        raise TypeError("Duration must be an integer or float")
 
     sns.set_style(style="whitegrid")
     sns.lineplot(x=np.arange(len(signal)) / sample_rate, y=signal)
@@ -131,12 +131,36 @@ def plot_signal(signal, sample_rate, duration):
     plt.show()
 
 
-signal = generate_signal(
-    sample_rate=SAMPLE_RATE,
-    duration=DURATION,
-    use_cosmic_events=False,
-    show_plot=True,
-    plot_save_path="signal_plot.png",
-)
-print("Signal generated with cosmic events.")
-print("Signal length:", len(signal))
+def convert_to_audio(signal, sample_rate, save_path="signal.wav", return_signal=False):
+    if not isinstance(save_path, str) or not save_path.endswith(".wav"):
+        raise TypeError("Save path must be a string ending with .wav")
+    if not isinstance(return_signal, bool):
+        raise TypeError("return_signal must be a boolean")
+
+    # Normalize signal to range [-1, 1]
+    audio_signal = signal / np.max(np.abs(signal))
+
+    save_audio_file(audio_signal, sample_rate, save_path)
+    return_signal if return_signal else None
+
+
+def save_audio_file(audio_signal, sample_rate, file_path):
+    try:
+        sf.write(file_path, audio_signal, sample_rate)
+    except Exception as e:
+        raise RuntimeError(f"Failed to save audio file: {e}")
+
+
+if __name__ == "__main__":
+    signal = generate_signal(
+        sample_rate=SAMPLE_RATE,
+        duration=DURATION,
+        use_cosmic_events=False,
+        show_plot=True,
+        plot_save_path="signal_plot.png",
+    )
+    print("Signal generated with cosmic events.")
+    print("Signal length:", len(signal))
+
+    convert_to_audio(signal=signal, sample_rate=SAMPLE_RATE, return_signal=True)
+    print("Signal converted to audio.")
