@@ -1,5 +1,5 @@
 # Project Parakeet
 
-We're sending a cosmic ray detector 30 km up into the sky (and make some music while we're at it).
+@MaadhavBhatt and @yajurrsharma's Apex Project.
 
-Code for music generation / graph plotting for energy of waves available.
+We're sending a cosmic ray detector 30 km up into the sky (and make some music while we're at it). Code for music generation and graph plotting for energy of waves still in the making.
