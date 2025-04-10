@@ -23,8 +23,8 @@ def monitor_rays(signal_file="ray_signal.txt"):
                 energy = duration 
 
                 print(f"Ray detected!")
-                print(f"Duration: {duration:.6f} s")
-                print(f"Approx Energy: {energy:.6f} eV")
+                print(f"Duration: {duration:.5f} s")
+                print(f"Approx Energy: {energy:.5f} eV")
 
             time.sleep(0.01)
 
