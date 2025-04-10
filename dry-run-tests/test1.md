@@ -1,9 +1,9 @@
-## Test 1 (RPi 4)
+## Test 1.1 (Raw Code)
 
 ### Idea
 
-One end of a jumper wire is attached to GPIO **_17_** of the RPi 4. The other end is then touched to the 3.3V pin, essentially 
-simulating an energy spike. This simulates a ray being hit. Test results to be posted soon, along with other advancements.
+We'll be writing a code to simulate a cosmic ray, and then time for how long the dummy GPIO pin stays HIGH for, to deduce energy. The interesting bit of this will be that there will be 2 
+seperate programs, one to **_create_** a ray of a random energy level, and one to **_deduce_** energy by the time period.
 
 ### Results
 
