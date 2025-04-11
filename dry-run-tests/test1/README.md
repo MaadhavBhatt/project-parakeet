@@ -18,4 +18,4 @@ to be connected to the RPi GPIO port, and the male portion of the wire is going 
 
 ### Results
 
-Logic works, but we have to derive a solid formula for the **_actual_** conversion from time to energy.
+Soon.
