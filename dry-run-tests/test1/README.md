@@ -7,4 +7,4 @@ seperate programs, one to **_create_** a ray of a random energy level, and one t
 
 ### Results
 
-Soon.
+Logic works, but we have to derive a solid formula for the **_actual_** conversion from time to energy.
