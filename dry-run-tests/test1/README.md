@@ -17,5 +17,4 @@ We'll be using the RPi 4 for now to simulate how the GPIO pin will go HIGH. The 
 to be connected to the RPi GPIO port, and the male portion of the wire is going to be touched on the 3v3 pin of the RPi, essentially, making the pin go HIGH. Then, the next steps will be the same as **_Test 1.1_**.
 
 ### Results
-
-Soon.
+The GPIO pin goes HIGH when the jumper wire is touched to the 3V GPIO pin, as well as when we touch it with our finger. The time period is recorded, and the energy is calculated. The results are consistent with the expected behavior of a cosmic ray.
