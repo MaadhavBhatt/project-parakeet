@@ -24,11 +24,10 @@ def read_events(filename):
     return events
 
 
-def calculate_pitch_log_scaled(energy):
+def calculate_pitch(energy):
     if energy <= 0:
         return 0
-    log_energy = math.log(energy)
-    return 440 * (2 ** (log_energy / 12))
+    return 440 * math.exp(math.log(2) * math.log(energy) / 12)
 
 
 def generate_pitch_log(events, output_file=OUTPUT_FILE):
@@ -37,7 +36,7 @@ def generate_pitch_log(events, output_file=OUTPUT_FILE):
             time_val = event["time"]
             energy = event["energy"]
             frequency = 1 / time_val if time_val != 0 else 0
-            pitch = calculate_pitch_log_scaled(energy)
+            pitch = calculate_pitch(energy)
             f.write(
                 f"Time: {time_val}, Energy: {energy}, Frequency: {frequency:.2f}, Pitch: {pitch:.2f}\n"
             )
@@ -46,7 +45,7 @@ def generate_pitch_log(events, output_file=OUTPUT_FILE):
 def plot_energy_vs_pitch(events, show_plot=False):
     times = [event["time"] for event in events]
     energies = [event["energy"] for event in events]
-    pitches = [calculate_pitch_log_scaled(e) for e in energies]
+    pitches = [calculate_pitch(e) for e in energies]
 
     sns.set_style(style="whitegrid")
     plt.figure(figsize=(10, 6))
