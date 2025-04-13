@@ -1,5 +1,4 @@
 import math
-import seaborn as sns
 import matplotlib.pyplot as plt
 import time as systime
 import os
@@ -47,7 +46,6 @@ def plot_energy_vs_pitch(events, show_plot=False):
     energies = [event["energy"] for event in events]
     pitches = [calculate_pitch(e) for e in energies]
 
-    sns.set_style(style="whitegrid")
     plt.figure(figsize=(10, 6))
     plt.plot(times, pitches, label="Pitch", marker="o")
     plt.xlabel("Time (s)")
