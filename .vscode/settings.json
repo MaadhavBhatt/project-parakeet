@@ -1,0 +1,11 @@
+{
+  "editor.formatOnSave": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.tabSize": 4,
+    "editor.formatOnType": true
+  },
+  "python.analysis.autoImportCompletions": true,
+  "editor.autoIndent": "full",
+  "editor.wordWrap": "on",
+}
