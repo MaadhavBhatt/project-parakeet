@@ -1,10 +1,10 @@
-import math
 from pydub import AudioSegment
 from pydub.generators import Sine
 import os
 
 INPUT_FILE = "pitch_log.txt"
 OUTPUT_FILE = "output_music.wav"
+
 
 def read_pitch_log(filename):
     pitch_data = []
@@ -18,10 +18,18 @@ def read_pitch_log(filename):
                     energy = float(parts[1].split(": ")[1])
                     frequency = float(parts[2].split(": ")[1])
                     pitch = float(parts[3].split(": ")[1])
-                    pitch_data.append({"time": time_val, "energy": energy, "frequency": frequency, "pitch": pitch})
+                    pitch_data.append(
+                        {
+                            "time": time_val,
+                            "energy": energy,
+                            "frequency": frequency,
+                            "pitch": pitch,
+                        }
+                    )
                 except ValueError:
                     pass
     return pitch_data
+
 
 def generate_tone_from_pitch(pitch, duration_ms=500):
     if pitch > 0:
@@ -29,15 +37,17 @@ def generate_tone_from_pitch(pitch, duration_ms=500):
         return tone
     return AudioSegment.silent(duration=duration_ms)
 
+
 def generate_music(pitch_data, output_file=OUTPUT_FILE):
     audio = AudioSegment.silent(duration=0)
     for event in pitch_data:
         pitch = event["pitch"]
         tone = generate_tone_from_pitch(pitch, duration_ms=500)
-        audio += tone 
+        audio += tone
 
     audio.export(output_file, format="wav")
     print(f"Music generated and saved to {output_file}")
+
 
 def create_music():
     if os.path.exists(INPUT_FILE):
@@ -45,5 +55,6 @@ def create_music():
         generate_music(pitch_data)
     else:
         print(f"Error: {INPUT_FILE} not found!")
+
 
 create_music()
