@@ -9,11 +9,11 @@ packaging==24.2
 pandas==2.2.3
 pillow==11.1.0
 pycparser==2.22
+pydub
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
 pytz==2025.2
 scipy==1.15.2
 seaborn==0.13.2
 six==1.17.0
-soundfile==0.13.1
 tzdata==2025.2
