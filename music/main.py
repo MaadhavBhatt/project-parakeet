@@ -11,7 +11,7 @@ def read_events(filename):
     events = []
     with open(filename, "r") as file:
         lines = file.readlines()
-        for line in lines[1:]:  # Skip header
+        for line in lines[1:]:
             parts = line.strip().split()
             if len(parts) == 2:
                 try:
@@ -52,8 +52,7 @@ def plot_energy_vs_pitch(events):
     plt.tight_layout()
     # plt.show()  # Uncomment to display the plot
 
-# Live loop
-print("Monitoring event_log.txt... Press Ctrl+C to stop.")
+print("Program Started.")
 while True:
     try:
         if os.path.exists(INPUT_FILE):
