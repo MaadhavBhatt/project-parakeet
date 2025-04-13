@@ -43,7 +43,7 @@ def generate_pitch_log(events, output_file=OUTPUT_FILE):
             )
 
 
-def plot_energy_vs_pitch(events):
+def plot_energy_vs_pitch(events, show_plot=False):
     times = [event["time"] for event in events]
     energies = [event["energy"] for event in events]
     pitches = [calculate_pitch_log_scaled(e) for e in energies]
@@ -56,16 +56,18 @@ def plot_energy_vs_pitch(events):
     plt.title("Pitch over Time")
     plt.legend()
     plt.tight_layout()
-    # plt.show()  # Uncomment to display the plot
+    if show_plot:
+        plt.show()
 
 
-print("Program Started.")
-while True:
-    try:
-        if os.path.exists(INPUT_FILE):
-            events = read_events(INPUT_FILE)
-            generate_pitch_log(events)
-        systime.sleep(2)
-    except KeyboardInterrupt:
-        print("Stopped.")
-        break
+if __name__ == "__main__":
+    print("Program Started.")
+    while True:
+        try:
+            if os.path.exists(INPUT_FILE):
+                events = read_events(INPUT_FILE)
+                generate_pitch_log(events)
+            systime.sleep(2)
+        except KeyboardInterrupt:
+            print("Stopped.")
+            break
