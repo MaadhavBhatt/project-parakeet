@@ -26,7 +26,9 @@ def read_events(filename):
 def calculate_pitch(energy):
     if energy <= 0:
         return 0
-    return 440 * math.exp(math.log(2) * math.log(energy) / 12)
+    log_energy = math.log(energy)
+    return 440 * (2 ** (log_energy / 12))
+    # return 440 * math.exp(math.log(2) * math.log(energy) / 12)
 
 
 def generate_pitch_log(events, output_file=OUTPUT_FILE):
