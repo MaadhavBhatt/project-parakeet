@@ -1,11 +1,11 @@
 import math
-import seaborn as sns
 import matplotlib.pyplot as plt
 import time as systime
 import os
 
 INPUT_FILE = "event_log.txt"
 OUTPUT_FILE = "pitch_log.txt"
+
 
 def read_events(filename):
     events = []
@@ -22,11 +22,14 @@ def read_events(filename):
                     pass
     return events
 
-def calculate_pitch_log_scaled(energy):
+
+def calculate_pitch(energy):
     if energy <= 0:
         return 0
     log_energy = math.log(energy)
     return 440 * (2 ** (log_energy / 12))
+    # return 440 * math.exp(math.log(2) * math.log(energy) / 12)
+
 
 def generate_pitch_log(events, output_file=OUTPUT_FILE):
     with open(output_file, "w") as f:
@@ -34,31 +37,36 @@ def generate_pitch_log(events, output_file=OUTPUT_FILE):
             time_val = event["time"]
             energy = event["energy"]
             frequency = 1 / time_val if time_val != 0 else 0
-            pitch = calculate_pitch_log_scaled(energy)
-            f.write(f"Time: {time_val}, Energy: {energy}, Frequency: {frequency:.2f}, Pitch: {pitch:.2f}\n")
+            pitch = calculate_pitch(energy)
+            f.write(
+                f"Time: {time_val}, Energy: {energy}, Frequency: {frequency:.2f}, Pitch: {pitch:.2f}\n"
+            )
 
-def plot_energy_vs_pitch(events):
+
+def plot_energy_vs_pitch(events, show_plot=False):
     times = [event["time"] for event in events]
     energies = [event["energy"] for event in events]
-    pitches = [calculate_pitch_log_scaled(e) for e in energies]
+    pitches = [calculate_pitch(e) for e in energies]
 
-    sns.set(style="whitegrid")
     plt.figure(figsize=(10, 6))
-    plt.plot(times, pitches, label="Pitch", marker='o')
+    plt.plot(times, pitches, label="Pitch", marker="o")
     plt.xlabel("Time (s)")
     plt.ylabel("Pitch (Hz)")
     plt.title("Pitch over Time")
     plt.legend()
     plt.tight_layout()
-    # plt.show()  # Uncomment to display the plot
+    if show_plot:
+        plt.show()
 
-print("Program Started.")
-while True:
-    try:
-        if os.path.exists(INPUT_FILE):
-            events = read_events(INPUT_FILE)
-            generate_pitch_log(events)
-        systime.sleep(2)
-    except KeyboardInterrupt:
-        print("Stopped.")
-        break
+
+if __name__ == "__main__":
+    print("Program Started.")
+    while True:
+        try:
+            if os.path.exists(INPUT_FILE):
+                events = read_events(INPUT_FILE)
+                generate_pitch_log(events)
+            systime.sleep(2)
+        except KeyboardInterrupt:
+            print("Stopped.")
+            break
