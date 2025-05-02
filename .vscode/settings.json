@@ -8,4 +8,7 @@
   "python.analysis.autoImportCompletions": true,
   "editor.autoIndent": "full",
   "editor.wordWrap": "on",
+  "black-formatter.args": [
+    "--line-length=88"
+  ],
 }
