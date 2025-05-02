@@ -58,10 +58,17 @@ def update(frame):
                 "%H:%M:%S"
             )
 
+            # Include altitude information if available
+            altitude_info = (
+                f" | Alt: {event.get('altitude', 0):.0f}m"
+                if "altitude" in event
+                else ""
+            )
+
             detection_text = ax_side.text(
                 0.1,
                 0.9 - len(detection_texts) * 0.15,
-                f"{event_utc} | {event['energy']:.1f} keV",
+                f"{event_utc} | {event['energy']:.1f} keV{altitude_info}",
                 color="yellow",
                 fontsize=14,
                 transform=ax_side.transAxes,
