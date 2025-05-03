@@ -174,5 +174,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Output files
-*--output.*
+# Generated files, input and output
+*-gen.*

@@ -4,8 +4,8 @@ from typing import Final
 import os
 import csv
 
-INPUT_FILE: Final[str] = "pitch_log.csv"
-OUTPUT_FILE: Final[str] = "output_music.wav"
+INPUT_FILE: Final[str] = "pitch_log-gen.csv"
+OUTPUT_FILE: Final[str] = "output_music-gen.wav"
 
 
 def read_pitch_log(filename) -> list[dict[str, float]]:

@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import time as systime
 import os
 
-INPUT_FILE = "event_log.txt"
-OUTPUT_FILE = "pitch_log.txt"
+INPUT_FILE = "event_log-gen.txt"
+OUTPUT_FILE = "pitch_log-gen.txt"
 
 
 def read_events(filename):
