@@ -2,7 +2,7 @@ from pydub import AudioSegment
 from pydub.generators import Sine
 import os
 
-INPUT_FILE = "pitch_log.txt"
+INPUT_FILE = "pitch_log.csv"
 OUTPUT_FILE = "output_music.wav"
 
 
@@ -10,14 +10,18 @@ def read_pitch_log(filename):
     pitch_data = []
     with open(filename, "r") as file:
         lines = file.readlines()
-        for line in lines:
-            parts = line.strip().split(", ")
-            if len(parts) == 4:
+        # Skip header line if it exists
+        # Assuming the first line contains the header "time". Feel free to change this to "energy" or "frequency" if needed.
+        start_line = 1 if lines and "time" in lines[0].lower() else 0
+
+        for line in lines[start_line:]:
+            values = line.strip().split(",")
+            if len(values) >= 4:  # Ensure we have at least 4 values
                 try:
-                    time_val = float(parts[0].split(": ")[1])
-                    energy = float(parts[1].split(": ")[1])
-                    frequency = float(parts[2].split(": ")[1])
-                    pitch = float(parts[3].split(": ")[1])
+                    time_val = float(values[0])
+                    energy = float(values[1])
+                    frequency = float(values[2])
+                    pitch = float(values[3])
                     pitch_data.append(
                         {
                             "time": time_val,
@@ -27,6 +31,7 @@ def read_pitch_log(filename):
                         }
                     )
                 except ValueError:
+                    # Skip lines that can't be converted to float
                     pass
     return pitch_data
 
