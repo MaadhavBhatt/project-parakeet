@@ -18,7 +18,7 @@ def read_pitch_log(filename) -> list[dict[str, float]]:
 
         for line in lines[start_line:]:
             values = line.strip().split(",")
-            if len(values) >= 4:  # Ensure we have at least 4 values
+            if len(values) == 4:  # Ensure we have exactly 4 values
                 try:
                     time_val = float(values[0])
                     energy = float(values[1])
