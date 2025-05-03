@@ -66,4 +66,5 @@ def create_music() -> None:
         print(f"Error: {INPUT_FILE} not found!")
 
 
-create_music()
+if __name__ == "__main__":
+    create_music()
