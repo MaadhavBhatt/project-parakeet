@@ -1,7 +1,8 @@
 from pydub import AudioSegment
 from pydub.generators import Sine
-import os
 from typing import Final
+import os
+import csv
 
 INPUT_FILE: Final[str] = "pitch_log.csv"
 OUTPUT_FILE: Final[str] = "output_music.wav"
@@ -9,21 +10,29 @@ OUTPUT_FILE: Final[str] = "output_music.wav"
 
 def read_pitch_log(filename) -> list[dict[str, float]]:
     pitch_data: list[dict[str, float]] = []
-    with open(filename, "r") as file:
-        lines: list = file.readlines()
-        # Skip header line if it exists
-        # Assuming the first line contains the header "time". Feel free to change this to "energy" or "frequency" if needed.
-        # TODO: Make this more flexible to handle different permutations of headings
-        start_line = 1 if lines and "time" in lines[0].lower() else 0
+    with open(filename, "r", newline="") as file:
+        csv_reader = csv.reader(file)
 
-        for line in lines[start_line:]:
-            values = line.strip().split(",")
-            if len(values) == 4:  # Ensure we have exactly 4 values
+        # Check if the first row is a header
+        try:
+            header = next(csv_reader)
+            # Assuming the header contains "time". Feel free to adjust this to "energy", "frequency", etc.
+            has_header = "time" in [h.lower() for h in header]
+            if not has_header:
+                # If not a header, reset file pointer and read again
+                file.seek(0)
+                csv_reader = csv.reader(file)
+        except StopIteration:
+            return pitch_data  # Empty file
+
+        for row in csv_reader:
+            if len(row) == 4:  # Ensure we have exactly 4 values
                 try:
-                    time_val = float(values[0])
-                    energy = float(values[1])
-                    frequency = float(values[2])
-                    pitch = float(values[3])
+                    # TODO: Make the more flexible by checking for permutations of headings.
+                    time_val = float(row[0])
+                    energy = float(row[1])
+                    frequency = float(row[2])
+                    pitch = float(row[3])
                     pitch_data.append(
                         {
                             "time": time_val,
@@ -33,7 +42,7 @@ def read_pitch_log(filename) -> list[dict[str, float]]:
                         }
                     )
                 except ValueError:
-                    # Skip lines that can't be converted to float
+                    # Skip rows that can't be converted to float
                     pass
     return pitch_data
 
