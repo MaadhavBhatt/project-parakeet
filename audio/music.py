@@ -116,7 +116,8 @@ def generate_music(
     print(f"Music generated and saved to {output_file}")
 
 
-def create_music() -> None:
+
+def create_music(input_file: str = INPUT_FILE) -> None:
     """
     Creates music based on pitch data from an input file.
 
@@ -130,11 +131,11 @@ def create_music() -> None:
     Raises:
         None explicitly, but may raise exceptions from called functions.
     """
-    if os.path.exists(INPUT_FILE):
-        pitch_data: list[dict[str, float]] = read_pitch_log(INPUT_FILE)
+    if os.path.exists(input_file):
+        pitch_data: list[dict[str, float]] = read_pitch_log(input_file)
         generate_music(pitch_data)
     else:
-        print(f"Error: {INPUT_FILE} not found!")
+        print(f"Error: {input_file} not found!")
 
 
 if __name__ == "__main__":
