@@ -8,7 +8,7 @@ INPUT_FILE: Final[str] = "pitch_log-gen.csv"
 OUTPUT_FILE: Final[str] = "output_music-gen.wav"
 
 
-def read_pitch_log(filename) -> list[dict[str, float]]:
+def read_pitch_log(filepath: str) -> list[dict[str, float]]:
     """
     Read a CSV file containing pitch log data and parse it into a list of dictionaries.
     The function attempts to detect if the file has a header row containing "time".
@@ -29,7 +29,7 @@ def read_pitch_log(filename) -> list[dict[str, float]]:
         - Empty files return an empty list.
     """
     pitch_data: list[dict[str, float]] = []
-    with open(filename, "r", newline="") as file:
+    with open(filepath, "r", newline="") as file:
         csv_reader = csv.reader(file)
 
         # Check if the first row is a header
@@ -90,31 +90,44 @@ def generate_music(
 ) -> None:
     """
     Generate music from pitch data and save to a WAV file.
-    This function creates an audio segment by concatenating tones generated
-    from a sequence of pitch values, then exports the result to an audio file.
+    This function creates an audio segment by placing tones at specific timestamps
+    based on the 'time' value in each pitch data entry.
     Args:
         pitch_data (list[dict[str, float]]): A list of dictionaries, where each
-            dictionary contains at least a 'pitch' key with its corresponding
-            frequency value in Hz.
+            dictionary contains 'time' and 'pitch' keys with their corresponding values.
         output_file (str, optional): The path where the generated audio will be saved.
             Defaults to the value of OUTPUT_FILE.
     Returns:
         None: The function saves the generated audio to a file and prints a
             confirmation message.
     Example:
-        >>> pitch_data = [{"pitch": 440.0}, {"pitch": 493.88}]  # A4, B4 notes
+        >>> pitch_data = [{"time": 2.0, "pitch": 440.0}, {"time": 5.0, "pitch": 493.88}]
         >>> generate_music(pitch_data, "my_music.wav")
         Music generated and saved to my_music.wav
     """
-    audio: AudioSegment = AudioSegment.silent(duration=0)
+    # Find the maximum time to determine the total duration
+    if not pitch_data:
+        print("No pitch data provided")
+        return
+
+    max_time_ms: int = (
+        int(max(event["time"] for event in pitch_data) * 1000) + 1000
+    )  # Add extra second
+
+    # Create a silent audio segment with the full duration
+    audio: AudioSegment = AudioSegment.silent(duration=max_time_ms)
+
+    # Place each tone at its specific time
     for event in pitch_data:
+        time_ms: int = int(event["time"] * 1000)  # Convert time to milliseconds
         pitch: float = event["pitch"]
         tone: AudioSegment = generate_tone_from_pitch(pitch, duration_ms=500)
-        audio += tone
+
+        # Overlay the tone at the specific time position
+        audio: AudioSegment = audio.overlay(tone, position=time_ms)
 
     audio.export(output_file, format="wav")
     print(f"Music generated and saved to {output_file}")
-
 
 
 def create_music(input_file: str = INPUT_FILE) -> None:
