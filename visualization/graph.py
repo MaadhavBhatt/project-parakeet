@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import os
+import sys
+
+# Add the parent directory to the path so we can import cosmic_ray_utils
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 from cosmic_ray_utils import CosmicRayGenerator
 
 # Constants
