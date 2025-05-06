@@ -3,26 +3,27 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import os
 import sys
+from typing import Final
 
 # Add the parent directory to the path so we can import cosmic_ray_utils
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 from cosmic_ray_utils import CosmicRayGenerator
 
 # Constants
-SAMPLE_RATE = 100  # Hz
-DURATION = 10  # seconds
-NOISE_LEVEL = 0.05  # Constant noise floor level
-EVENT_INTENSITY = 2.0  # Intensity of detected waves
-TIME_STEP = 0.1  # Step size for live update
+SAMPLE_RATE: Final[int] = 100  # Hz
+DURATION: Final[int] = 10  # seconds
+NOISE_LEVEL: Final[float] = 0.05  # Constant noise floor level
+EVENT_INTENSITY: Final[float] = 2.0  # Intensity of detected waves
+TIME_STEP: Final[float] = 0.1  # Step size for live update
 
 # Create a cosmic ray generator for visualization
-ray_generator = CosmicRayGenerator(
+ray_generator: CosmicRayGenerator = CosmicRayGenerator(
     mode="predefined", duration=DURATION, noise_level=NOISE_LEVEL
 )
-events = ray_generator.get_events()
+events: list[dict[str, float]] = ray_generator.get_events()
 
-time_values = np.arange(0, DURATION, TIME_STEP)
-energy_values = np.full_like(time_values, NOISE_LEVEL)
+time_values: np.ndarray = np.arange(0, DURATION, TIME_STEP)
+energy_values: np.ndarray = np.full_like(time_values, NOISE_LEVEL)
 
 fig, ax = plt.subplots()
 fig.patch.set_facecolor("black")
