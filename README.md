@@ -30,7 +30,7 @@ We're sending a cosmic ray detector 30 km up into the sky (and making some music
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1️⃣ Research | Component selection and theoretical planning | Completed |
+| 1️⃣ Research | Component selection and theoretical planning | In progress |
 | 2️⃣ Building | Hardware integration and ground testing | In progress |
 | 3️⃣ Pre-launch | Flight and temperature readiness checks | - |
 | 4️⃣ Mission | Launch, data collection, and recovery | - |
